@@ -1,0 +1,78 @@
+#!/bin/sh
+
+sub_help() {
+	echo "Available commands:"
+	echo "	start		Start AnyConnect service"
+	echo "	config		Configure domain"
+	echo "	renew		Obtain/renew Let's Encrypt certificates"
+	echo "	linkcert	Generate symlinks to the certificates"
+	echo "	shell		Enter an interactive shell"
+	echo ""
+	echo "		!!! IMPORTANT !!!"
+	echo "Only data in /dogespeed directory is preserved."
+}
+
+sub_start() {
+	/etc/ocserv/syncpasswd.sh
+	exec /usr/bin/supervisord -c /etc/supervisord.conf
+}
+
+sub_config() {
+	echo -n "Enter domain name: "
+	read domain
+	mkdir -p /dogespeed/ssl/
+	echo $domain > /dogespeed/ssl/domains.txt
+	echo "Saved!"
+}
+
+sub_renew() {
+	mkdir -p /dogespeed/ssl/wellknown/.well-known/acme-challenge
+	cd /dogespeed/ssl/wellknown
+	python -m SimpleHTTPServer 80 &
+	cd /dogespeed/ssl
+	echo "WELLKNOWN=/dogespeed/ssl/wellknown/.well-known/acme-challenge" > config.sh
+	/opt/letsencrypt.sh/letsencrypt.sh -c
+	kill $!
+	sub_linkcert
+}
+
+sub_linkcert() {
+	cd /dogespeed/ssl
+	domain=`cat domains.txt`
+	echo "Our domain name: $domain"
+	ln -sf certs/$domain/fullchain.pem fullchain.pem
+	ln -sf certs/$domain/privkey.pem privkey.pem
+	echo "Linked"
+}
+
+sub_shell() {
+	exec /bin/bash
+}
+
+# Let's get things ready!
+[ -d /dev/net ] ||
+	mkdir -p /dev/net
+[ -c /dev/net/tun ] ||
+	mknod /dev/net/tun c 10 200
+
+iptables -t nat -A POSTROUTING -j MASQUERADE
+sysctl net.ipv4.ip_forward=1
+
+# Serve the dishes!
+command=$1
+case $command in
+	"")
+		sub_start
+		;;
+	"-h" | "--help" | "help" )
+		sub_help
+		;;
+	*)
+		shift
+		sub_${command} $@
+		if [ $? = 127 ]; then
+			echo "Command not found." >&2
+			exit 1
+		fi
+		;;
+esac
