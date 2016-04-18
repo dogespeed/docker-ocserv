@@ -18,10 +18,10 @@ sub_start() {
 }
 
 sub_config() {
-	echo -n "Enter domain name: "
-	read domain
+	echo -n "Enter domain names (separate alternative names with spaces): "
+	read domains
 	mkdir -p /dogespeed/ssl/
-	echo $domain > /dogespeed/ssl/domains.txt
+	echo $domains > /dogespeed/ssl/domains.txt
 	echo "Saved!"
 }
 
@@ -38,8 +38,10 @@ sub_renew() {
 
 sub_linkcert() {
 	cd /dogespeed/ssl
-	domain=`cat domains.txt`
-	echo "Our domain name: $domain"
+	domains=`cat domains.txt`
+	echo "Domain names: $domains"
+	domain=`echo $domains | cut -f1`
+	echo "Main domain name: $domain"
 	ln -sf certs/$domain/fullchain.pem fullchain.pem
 	ln -sf certs/$domain/privkey.pem privkey.pem
 	echo "Linked"
