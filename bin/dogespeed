@@ -40,7 +40,7 @@ sub_linkcert() {
 	cd /dogespeed/ssl
 	domains=`cat domains.txt`
 	echo "Domain names: $domains"
-	domain=`echo $domains | cut -f1`
+	domain=`echo $domains | cut -f1 -d' '`
 	echo "Main domain name: $domain"
 	ln -sf certs/$domain/fullchain.pem fullchain.pem
 	ln -sf certs/$domain/privkey.pem privkey.pem
