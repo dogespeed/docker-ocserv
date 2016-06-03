@@ -30,8 +30,9 @@ sub_renew() {
 	cd /dogespeed/ssl/wellknown
 	python -m SimpleHTTPServer 80 &
 	cd /dogespeed/ssl
-	echo "WELLKNOWN=/dogespeed/ssl/wellknown/.well-known/acme-challenge" > config.sh
-	/opt/letsencrypt.sh/letsencrypt.sh -c
+	echo "BASEDIR=/dogespeed/ssl/" > config.sh
+	echo "WELLKNOWN=/dogespeed/ssl/wellknown/.well-known/acme-challenge" >> config.sh
+	/opt/letsencrypt.sh/letsencrypt.sh -c -f /dogespeed/ssl/config.sh
 	kill $!
 	sub_linkcert
 }
@@ -48,7 +49,7 @@ sub_linkcert() {
 }
 
 sub_shell() {
-	exec /bin/bash
+	exec /bin/sh
 }
 
 # Let's get things ready!
