@@ -1,5 +1,5 @@
 #!/bin/bash
-URL='replace this example url'
+URL=`cat /dogespeed/api.txt`
 wget -O /etc/ocserv/passwd.new $URL > /dev/null
 if [ $? -ne 0 ]; then
 	echo "Failed"

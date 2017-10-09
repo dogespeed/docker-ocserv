@@ -23,17 +23,8 @@ sub_config() {
 	mkdir -p /dogespeed/ssl/
 	echo $domains > /dogespeed/ssl/domains.txt
 	echo -n "Enter API endpoint"
-	read API
-	echo <<EOF
-	URL='$API'
-	wget -O /etc/ocserv/passwd.new $URL > /dev/null
-	if [ $? -ne 0 ]; then
-		echo "Failed"
-	else
-		echo "Succeeded"
-		mv /etc/ocserv/passwd.new /etc/ocserv/passwd
-	fi
-EOF > /dogespeed/syncpasswd.sh
+	read APIendpoint
+	echo $APIendpoint > /dogespeed/api.txt
 	echo "Saved!"
 }
 
