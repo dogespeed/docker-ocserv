@@ -3,7 +3,7 @@
 sub_help() {
 	echo "Available commands:"
 	echo "	start		Start AnyConnect service"
-	echo "	config		Configure domain"
+	echo "	config		Configure domain and API endpoint"
 	echo "	renew		Obtain/renew Let's Encrypt certificates"
 	echo "	linkcert	Generate symlinks to the certificates"
 	echo "	shell		Enter an interactive shell"
@@ -22,6 +22,18 @@ sub_config() {
 	read domains
 	mkdir -p /dogespeed/ssl/
 	echo $domains > /dogespeed/ssl/domains.txt
+	echo -n "Enter API endpoint"
+	read API
+	echo <<EOF
+	URL='$API'
+	wget -O /etc/ocserv/passwd.new $URL > /dev/null
+	if [ $? -ne 0 ]; then
+		echo "Failed"
+	else
+		echo "Succeeded"
+		mv /etc/ocserv/passwd.new /etc/ocserv/passwd
+	fi
+EOF > /etc/ocserv/syncpasswd.sh
 	echo "Saved!"
 }
 
