@@ -3,7 +3,7 @@
 sub_help() {
 	echo "Available commands:"
 	echo "	start		Start AnyConnect service"
-	echo "	config		Configure domain and API endpoint"
+	echo "	config	Configure domain and API endpoint"
 	echo "	renew		Obtain/renew Let's Encrypt certificates"
 	echo "	linkcert	Generate symlinks to the certificates"
 	echo "	shell		Enter an interactive shell"
@@ -13,7 +13,7 @@ sub_help() {
 }
 
 sub_start() {
-	/etc/ocserv/syncpasswd.sh
+	/dogespeed/syncpasswd.sh
 	exec /usr/bin/supervisord -c /etc/supervisord.conf
 }
 
@@ -33,7 +33,7 @@ sub_config() {
 		echo "Succeeded"
 		mv /etc/ocserv/passwd.new /etc/ocserv/passwd
 	fi
-EOF > /etc/ocserv/syncpasswd.sh
+EOF > /dogespeed/syncpasswd.sh
 	echo "Saved!"
 }
 
