@@ -29,6 +29,7 @@ sub_config() {
 }
 
 sub_renew() {
+	/opt/letsencrypt.sh/dehydrated --register --accept-terms
 	mkdir -p /dogespeed/ssl/wellknown/.well-known/acme-challenge
 	cd /dogespeed/ssl/wellknown
 	python -m SimpleHTTPServer 80 &
