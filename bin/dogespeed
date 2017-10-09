@@ -13,7 +13,7 @@ sub_help() {
 }
 
 sub_start() {
-	/dogespeed/syncpasswd.sh
+	/etc/ocserv/syncpasswd.sh
 	exec /usr/bin/supervisord -c /etc/supervisord.conf
 }
 
@@ -35,7 +35,7 @@ sub_renew() {
 	cd /dogespeed/ssl
 	echo "BASEDIR=/dogespeed/ssl/" > config.sh
 	echo "WELLKNOWN=/dogespeed/ssl/wellknown/.well-known/acme-challenge" >> config.sh
-	/opt/letsencrypt.sh/letsencrypt.sh -c -f /dogespeed/ssl/config.sh
+	/opt/letsencrypt.sh/dehydrated -c -f /dogespeed/ssl/config.sh
 	kill $!
 	sub_linkcert
 }

@@ -12,7 +12,7 @@ COPY sources.list /etc/apt/sources.list
 RUN apt-get update && apt-get install -y openssh-server ocserv wget curl cron supervisor openssl python git gnutls-bin iptables
 
 # Set up letsencrypt.sh
-RUN git clone --depth=1 https://github.com/lukas2511/letsencrypt.sh.git /opt/letsencrypt.sh
+RUN git clone --depth=1 https://github.com/lukas2511/dehydrated /opt/letsencrypt.sh
 
 # Set up supervisord
 COPY supervisord.conf /etc/supervisord.conf
